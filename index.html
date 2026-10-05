@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SplitEase - Dining Bill Splitter</title>
+  <meta name="description" content="Fast, mathematically exact, and elegant dining bill splitter for groups of friends.">
+  <meta property="og:title" content="SplitEase - Dining Bill Splitter">
+  <meta property="og:description" content="Fast, mathematically exact, and elegant dining bill splitter for groups of friends.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Hero / Header Section -->
+    <header class="app-header">
+      <div class="brand-badge">
+        <!-- Minimal Dining Table / Cloche SVG -->
+        <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path>
+          <path d="M4 18h16"></path>
+          <path d="M12 4v-2"></path>
+          <path d="M4 18a8 8 0 0 1 16 0"></path>
+        </svg>
+        <span>Dining Bill Splitter</span>
+      </div>
+      <h1 class="app-title">Split the bill. <span class="highlight-coral">Keep the memories.</span></h1>
+      <p class="app-subtitle">
+        Gathered around the table with friends? Settle dinner in seconds with penny-perfect, transparent math.
+      </p>
+    </header>
+
+    <!-- Main 2-Column App Grid -->
+    <main class="main-grid">
+      
+      <!-- LEFT COLUMN: Bill Input Card (Warm Cream Surface) -->
+      <section class="app-card" id="inputCard" aria-label="Bill details input">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="card-icon-bubble">
+              <!-- Bill / Receipt SVG -->
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"></path>
+                <path d="M8 7h8"></path>
+                <path d="M8 11h8"></path>
+                <path d="M8 15h5"></path>
+              </svg>
+            </div>
+            <div>
+              <h2>Bill Details</h2>
+              <p>Enter meal total and dining group size</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Global Alert for general messages -->
+        <div class="global-alert" id="globalAlert" role="alert">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span id="globalAlertText"></span>
+        </div>
+
+        <form id="billForm" novalidate>
+          
+          <!-- Occasion Input Field -->
+          <div class="form-group">
+            <label class="form-label" for="occasionInput">
+              Occasion or Restaurant
+            </label>
+            <div class="input-wrapper">
+              <span class="input-icon-prefix">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+              </span>
+              <input
+                type="text"
+                id="occasionInput"
+                class="form-input has-icon-prefix"
+                placeholder="e.g., Dinner with Friends, Olive Bistro"
+                maxlength="60"
+                autocomplete="off"
+              >
+            </div>
+            <!-- Quick Chips -->
+            <div class="quick-chips-row" aria-label="Suggested occasions">
+              <button type="button" class="chip-btn" data-occasion="Dinner with Friends">🍽️ Dinner</button>
+              <button type="button" class="chip-btn" data-occasion="Weekend Brunch">🥞 Brunch</button>
+              <button type="button" class="chip-btn" data-occasion="Pizza Night">🍕 Pizza Night</button>
+              <button type="button" class="chip-btn" data-occasion="Drinks & Bites">🥂 Drinks</button>
+            </div>
+          </div>
+
+          <!-- Total Bill Amount Field -->
+          <div class="form-group">
+            <label class="form-label" for="billAmountInput">
+              Total Bill Amount <span class="required-star">*</span>
+            </label>
+            <div class="input-wrapper">
+              <span class="input-prefix">₹</span>
+              <input
+                type="number"
+                id="billAmountInput"
+                class="form-input has-prefix"
+                placeholder="0.00"
+                step="0.01"
+                min="0.01"
+                required
+                autocomplete="off"
+                inputmode="decimal"
+              >
+            </div>
+            <div class="field-error-msg" id="billErrorMsg"></div>
+          </div>
+
+          <!-- Number of People Field -->
+          <div class="form-group">
+            <label class="form-label" for="peopleInput">
+              Number of People <span class="required-star">*</span>
+            </label>
+            
+            <div class="stepper-container">
+              <button type="button" class="stepper-btn" id="decPeopleBtn" aria-label="Decrease people count">−</button>
+              <input
+                type="number"
+                id="peopleInput"
+                class="form-input stepper-input"
+                value="4"
+                min="1"
+                max="500"
+                step="1"
+                required
+                inputmode="numeric"
+              >
+              <button type="button" class="stepper-btn" id="incPeopleBtn" aria-label="Increase people count">+</button>
+            </div>
+            <div class="field-error-msg" id="peopleErrorMsg"></div>
+
+            <!-- Quick Count Presets -->
+            <div class="people-presets" aria-label="Quick people presets">
+              <button type="button" class="preset-btn" data-people="2">2</button>
+              <button type="button" class="preset-btn" data-people="3">3</button>
+              <button type="button" class="preset-btn active" data-people="4">4</button>
+              <button type="button" class="preset-btn" data-people="5">5</button>
+              <button type="button" class="preset-btn" data-people="6">6</button>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="form-actions">
+            <button type="submit" class="btn-primary" id="splitBtn">
+              <!-- Primary CTA with Coral styling and arrow -->
+              <span>Split the Bill &rarr;</span>
+            </button>
+            
+            <button type="button" class="btn-secondary" id="resetBtn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                <path d="M3 3v5h5"></path>
+              </svg>
+              <span>Reset &amp; Clear</span>
+            </button>
+          </div>
+
+        </form>
+      </section>
+
+      <!-- RIGHT COLUMN: Result / Summary Card (Warm Cream Surface) -->
+      <section class="app-card" id="resultCard" aria-label="Split summary result">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="card-icon-bubble">
+              <!-- Users / Friends SVG -->
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </div>
+            <div>
+              <h2>Split Summary</h2>
+              <p>Individual shares &amp; payment breakdown</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State (Shown before calculation) -->
+        <div class="empty-state" id="emptyState">
+          <!-- Minimalist Vector Illustration: Navy, Coral, Cream, Amber -->
+          <svg class="empty-state-art" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Plate Outer Base (Cream & Navy border) -->
+            <circle cx="70" cy="70" r="58" fill="#f4efdf" stroke="#e6dfd1" stroke-width="2"/>
+            <circle cx="70" cy="70" r="46" fill="#fdfcf9" stroke="#dcd4c5" stroke-width="1.5" stroke-dasharray="3 3"/>
+            
+            <!-- Left Fork (Deep Navy) -->
+            <path d="M25 45v48M25 45c-2.5 0-4.5 4-4.5 10h9c0-6-2-10-4.5-10z" stroke="#0c152c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="25" y1="45" x2="25" y2="55" stroke="#0c152c" stroke-width="1.5"/>
+            
+            <!-- Right Knife (Deep Navy) -->
+            <path d="M115 45v48M115 45c3.5 2.5 5 8 5 15h-5" stroke="#0c152c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            
+            <!-- Warm Coral Receipt Slip in Center -->
+            <rect x="50" y="42" width="40" height="56" rx="5" fill="#ffffff" stroke="#e25b45" stroke-width="1.8"/>
+            
+            <!-- Small Coral Header Bar on Receipt -->
+            <rect x="54" y="46" width="32" height="4" rx="2" fill="#e25b45"/>
+            
+            <!-- Receipt Bill Lines -->
+            <line x1="56" y1="58" x2="76" y2="58" stroke="#0c152c" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="56" y1="65" x2="84" y2="65" stroke="#a0aec0" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="56" y1="72" x2="70" y2="72" stroke="#a0aec0" stroke-width="1.5" stroke-linecap="round"/>
+            
+            <!-- Small Amber Decorative Seal -->
+            <circle cx="70" cy="85" r="5" fill="#f59e0b"/>
+            <circle cx="70" cy="85" r="2.5" fill="#ffffff"/>
+          </svg>
+          <h3 class="empty-state-title">Your split will appear here</h3>
+          <p class="empty-state-desc">
+            Enter the meal details on the left and tap <strong>Split the Bill</strong> to see each person's exact share.
+          </p>
+          <div class="empty-hints">
+            <span class="hint-item"><span class="hint-dot"></span> Exact penny balance</span>
+            <span class="hint-item"><span class="hint-dot"></span> Auto-saved locally</span>
+            <span class="hint-item"><span class="hint-dot"></span> Instant group copy</span>
+          </div>
+        </div>
+
+        <!-- Active Result State (Shown after calculation - Modern Receipt) -->
+        <div class="result-content" id="resultContent" aria-live="polite">
+          
+          <!-- Occasion Banner -->
+          <div class="occasion-banner">
+            <div class="occasion-info">
+              <div class="occasion-icon">
+                <!-- Utensils icon -->
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 2v8a4 4 0 0 1-4 4H6"></path>
+                  <line x1="6" y1="2" x2="6" y2="22"></line>
+                </svg>
+              </div>
+              <span class="occasion-title" id="occasionDisplay">Dinner with Friends</span>
+            </div>
+            <div class="exact-tag">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span>Exact Match</span>
+            </div>
+          </div>
+
+          <!-- Metrics Overview Cards -->
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-label">Total Bill</div>
+              <div class="metric-value highlight" id="summaryBillDisplay">₹0.00</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Avg Share</div>
+              <div class="metric-value" id="summaryPerPersonDisplay">₹0.00</div>
+            </div>
+          </div>
+
+          <!-- Each Person Pays Section -->
+          <div class="shares-section-header">
+            <span class="shares-title">Each Person Pays</span>
+            <span class="shares-count-badge" id="sharesCountBadge">4 People</span>
+          </div>
+
+          <div class="shares-list" id="sharesList" role="list">
+            <!-- Dynamically populated person rows -->
+          </div>
+
+          <!-- Modern Receipt Breakdown Footer -->
+          <div class="receipt-footer">
+            <div class="receipt-row">
+              <span>Original Bill Amount</span>
+              <span id="receiptSubtotal">₹0.00</span>
+            </div>
+            <div class="receipt-row total-row">
+              <span>Final Total</span>
+              <span class="total-amount" id="receiptTotal">₹0.00</span>
+            </div>
+            <div class="adjustment-note" id="adjustmentNote" style="display: none;"></div>
+          </div>
+
+          <!-- Share Actions -->
+          <div class="share-actions-row">
+            <button type="button" class="btn-share" id="copyShareBtn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
+              </svg>
+              <span>Copy Breakdown for Chat</span>
+            </button>
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- App Footer -->
+    <footer class="app-footer">
+      <p>SplitEase &bull; Built with HTML5, CSS3 &amp; Vanilla JavaScript &bull; <span>Penny-Perfect Exact Splits</span></p>
+    </footer>
+
+  </div>
+
+  <!-- Floating Toast Notification (Deep Midnight Navy with Coral Glow) -->
+  <div class="toast-msg" id="toastMsg" role="status">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff7e69" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span id="toastText">Breakdown copied to clipboard!</span>
+  </div>
+
+  <!-- Vanilla JS Script -->
+  <script src="script.js"></script>
+</body>
+</html>

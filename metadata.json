@@ -1,0 +1,6 @@
+{
+  "name": "SplitEase - Dining Bill Splitter",
+  "description": "Fast, mathematically exact, and elegant dining bill splitter for groups of friends.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
